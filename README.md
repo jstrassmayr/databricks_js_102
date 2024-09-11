@@ -40,7 +40,7 @@ import dlt
 from pyspark.sql.functions import *
 ```
 
-## Download input data
+# Download input data
 First we need to download the babyname data from ny.gov into our Raw layer.
 - Copy and paste the following cell's code into the first cell of your newly created notebook
 - Modify the value of the UNITY_CATALOG_VOLUME_PATH env. variable to meet our requirements. Hint: You can copy the full path from the overview-page of your volume.
@@ -56,7 +56,7 @@ os.environ["DATASET_DOWNLOAD_FILENAME"] = "rows.csv"
 dbutils.fs.cp(f"{os.environ.get('DATASET_DOWNLOAD_URL')}", f"{os.environ.get('UNITY_CATALOG_VOLUME_PATH')}{os.environ.get('DATASET_DOWNLOAD_FILENAME')}")
 ```
 
-## Let's create our first DLT-table
+# Let's create our first DLT-table
 Let's load data from our CSV file into a table in our Bronze layer with only one modification: The column 'First Name' must be renamed as space-characters (" ") are not allowed in column names.
 - Copy and paste the following cell's code into the next cell.
   - Note: The ```@dlt.table``` decorator tells the DLT-system to create a table that contains the result of a DataFrame returned by a function. Add the ```@dlt.table``` decorator before any Python function definition that returns a *Spark DataFrame* to register a new table in Delta Live Tables.
@@ -75,7 +75,7 @@ This will lead to an error as mentioned in the 'Good to know'-section. In order 
 
 
 
-## Let's create our first DLT-pipeline
+# Let's create our first DLT-pipeline
 - Click 'Delta Live Tables' in the sidebar and click Create Pipeline.
 - Enter a name e.g. 'babynames dlt johstr'
 - Select 'Serverless'. 
@@ -106,7 +106,7 @@ When using "Development" mode, the cluster is not shut down immediately but kept
 ![image](https://github.com/user-attachments/assets/3a500b4f-0a33-4aa4-9fc0-99d4178c8b05)
 Ok, we see data. But the result is rather boring as nothing fancy or unexpected happened. But...
 
-## Let's get fancy - Silver layer
+# Let's get fancy - Silver layer
 In order to get the advantages mentioned at the beginning of this page (e.g. table dependency resolution, pipeline self creation, invalid data handling...), we need an "actual pipeline" of multiple tables and dependencies between them.
 We will load data from Bronze to Silver layer doing the following enhancements
 - Let's add tests aka. data validations to only ingest valid data into our Silver layer. We want...
@@ -152,10 +152,10 @@ You will notice that data validation shows 532 failed rows from the expectation 
 | fail           | expect_or_fail | Invalid records prevent the update from succeeding. Manual intervention is required before re-processing.           |
 
 
-##Dependency resolution
+### Dependency resolution
 To show that the order of the DLT table definitions in the notebook is irrelevant for the execution, you could simply drag and drop the ```Silver layer``` cell above the ```Raw layer``` cell and execute the pipeline again.
 
-## Gold layer
+# Gold layer
 Let's extend our pipeline by creating a table in a Gold layer which contains the top baby names of 2021.
 - Open your folder "dbx_dlt_102" in your Workspace
 - Create a new notebook named "02 Gold"
