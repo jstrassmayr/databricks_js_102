@@ -40,7 +40,7 @@ import dlt
 from pyspark.sql.functions import *
 ```
 
-# Download input data
+# Download data to Raw
 First we need to download the babyname data from ny.gov into our Raw layer.
 - Copy and paste the following cell's code into the first cell of your newly created notebook
 - Modify the value of the UNITY_CATALOG_VOLUME_PATH env. variable to meet our requirements. Hint: You can copy the full path from the overview-page of your volume.
