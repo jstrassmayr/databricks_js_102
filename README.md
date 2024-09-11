@@ -23,16 +23,23 @@ When asking Databricks to update the DLT-table Y it will run the load of DLT-tab
 ## Good to know
 1. If running your DLT-code does not work, please check [this Article](https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines#requirements) by MS to check for upfront requirements.
 2. A notebook that contains DLT statements cannot be run directly but only from the pipeline itself.
-3. I (Johannes) created a catalog named dbx_dlt_102 specifically for this learning session.
+3. I (Johannes) created a catalog named 'dbx_dlt_102' specifically for this learning session.
 
 ## Import the DLT module
 Every python notebook that contains DLT code, needs the python DLT-module.
+- Create a new notebook
+- Copy and paste the following cell's code into the first cell of your newly created notebook
+
 ```python
 import dlt
 from pyspark.sql.functions import *
 ```
 
 ## Download the input data
+First we need to download the babyname data from ny.gov
+- Copy and paste the following cell's code into the first cell of your newly created notebook
+- Modify the value of the UNITY_CATALOG_VOLUME_PATH env. variable to meet our requirements
+
 ```python
 import os
 
