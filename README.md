@@ -166,7 +166,7 @@ import dlt
 from pyspark.sql.functions import *
 ```
 - Copy and paste the following cell's code into the next cell
-```
+```python
 @dlt.table(
   comment="A table summarizing counts of the top baby names for New York for 2021."
 )
