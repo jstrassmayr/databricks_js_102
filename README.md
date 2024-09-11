@@ -32,7 +32,7 @@ I (Johannes) created a catalog named 'dbx_dlt_102' specifically for this learnin
 ## Import the DLT module
 Every python notebook that contains DLT code, needs the python DLT-module.
 - Create a folder "dbx_dlt_102" in your workspace
-- Create a new notebook named "01 Download input data" within your previously created folder
+- Create a new notebook named "01 Bronze and Silver" within your previously created folder
 - Copy and paste the following cell's code into the first cell of your newly created notebook
 
 ```python
@@ -41,11 +41,12 @@ from pyspark.sql.functions import *
 ```
 
 ## Download input data
-First we need to download the babyname data from ny.gov
+First we need to download the babyname data from ny.gov into our Raw layer.
 - Copy and paste the following cell's code into the first cell of your newly created notebook
 - Modify the value of the UNITY_CATALOG_VOLUME_PATH env. variable to meet our requirements. Hint: You can copy the full path from the overview-page of your volume.
 - Click "Run cell"
 ```python
+# Raw layer
 import os
 
 os.environ["UNITY_CATALOG_VOLUME_PATH"] = "/Volumes/<catalog-name>/<schema-name>/<volume-name>/" # don't forget the trailing slash (/)
@@ -56,19 +57,23 @@ dbutils.fs.cp(f"{os.environ.get('DATASET_DOWNLOAD_URL')}", f"{os.environ.get('UN
 ```
 
 ## Let's create our first DLT-table
-The ```@dlt.table``` decorator tells the DLT-system to create a table that contains the result of a DataFrame returned by a function. Add the ```@dlt.table``` decorator before any Python function definition that returns a *Spark DataFrame* to register a new table in Delta Live Tables.
-- Copy and paste the following cell's code into the next cell
+Let's load data from our CSV file into a table in our Bronze layer with only one modification: The column 'First Name' must be renamed as space-characters (" ") are not allowed in column names.
+- Copy and paste the following cell's code into the next cell.
+  - Note: The ```@dlt.table``` decorator tells the DLT-system to create a table that contains the result of a DataFrame returned by a function. Add the ```@dlt.table``` decorator before any Python function definition that returns a *Spark DataFrame* to register a new table in Delta Live Tables.
 - Click "Run all"
-```
+```python
+# Bronze layer
 @dlt.table(
   comment="Popular baby first names in New York"
 )
 def baby_names_raw():
   df = spark.read.csv(f"{os.environ.get('UNITY_CATALOG_VOLUME_PATH')}{os.environ.get('DATASET_DOWNLOAD_FILENAME')}", header=True, inferSchema=True)
-  df_renamed_column = df.withColumnRenamed("First Name", "First_Name")
-  return df_renamed_column
+  df_renamed = df.withColumnRenamed("First Name", "First_Name") # columns with spaces need to be renamed
+  return df_renamed
 ```
-This will lead to an error as mentioned in the 'Good to know'-section above. In order to execute the code, we need to create a DLT pipeline.
+This will lead to an error as mentioned in the 'Good to know'-section. In order to execute the code, we need to create a DLT pipeline first.
+
+
 
 ## Let's create our first DLT-pipeline
 - Click 'Delta Live Tables' in the sidebar and click Create Pipeline.
@@ -102,25 +107,45 @@ When using "Development" mode, the cluster is not shut down immediately but kept
 Ok, we see data. But the result is rather boring as nothing fancy or unexpected happened. But...
 
 ## Let's get fancy
-In order to get the advantages mentioned at the beginning of this page (e.g. table dependency resolution, pipeline self creation, ...), we need an "actual pipeline" of multiple tables and dependencies between them. 
+In order to get the advantages mentioned at the beginning of this page (e.g. table dependency resolution, pipeline self creation, ...), we need an "actual pipeline" of multiple tables and dependencies between them.
+We will load data from Bronze to Silver layer doing the following enhancements
+- Let's add tests aka. data validations to only ingest valid data into our Silver layer and
+- Let's rename the column 'Year' to 'Year_Of_Birth' to make it more understandable in business terms
 
-Let's create a new DLT-table (for Silver layer) named 'baby_names_prepared' which contains only 3 columns from the ingested 'baby_names_raw' table and renames 1 column.
-- Open your notebook
+Proceed as follows
+- Open your source code notebook
 - Copy and paste the following cell's code into the next cell
 ```python
+# Silver layer
 @dlt.table(
   comment="New York popular baby first name data cleaned and prepared for analysis."
 )
-def baby_names_prepared():
-  return (
-    dlt.read("baby_names_raw")
-      .withColumnRenamed("Year", "Year_Of_Birth")
-      .select("Year_Of_Birth", "First_Name", "Count")
-  )
+@dlt.expect("valid_first_name", "First_Name IS NOT NULL")
+@dlt.expect_or_fail("valid_count", "Count > 0")
+def baby_names_silver():
+  df = dlt.read("baby_names_raw")
+  df_renamed = df.withColumnRenamed("Year", "Year_Of_Birth")
+  return df
 ```
 - Run again: Click on the compute selector (top right) and attach the notebook to your previously created pipeline (e.g. babyname_dlt_johstr) and from now on: Simply hit the "Start" button to start your notebook (or actually the pipeline containing this notebook).
 
-You will now see 2 tables in your pipeline graph: baby_names_raw and baby_names_prepared. Open your Catalog to review the result.
+You will now see 2 tables in your pipeline graph: baby_names_raw and baby_names_silver.
+
+## Verify data quality
+- Click on 'Delta Live Tables' in the left sidebar
+- Open your specific pipeline
+- Tap on the table for which we defined 'expectations' (silver table)
+- Select the tab 'Data quality' in the right panel.
+![image](https://github.com/user-attachments/assets/d2dad460-62cf-4ce5-bdc5-e0b954ba0a64)
+Nothing should have failed.
+
+### Expectation handling
+| Action         | Type (Python)  | Result                                                                                                              |
+|----------------|----------------|---------------------------------------------------------------------------------------------------------------------|
+| warn (default) | expect         | Invalid records are written to the target; failure is reported as a metric for the dataset.                         |
+| drop           | expect_or_drop | Invalid records are dropped before data is written to the target; failure is reported as a metrics for the dataset. |
+| fail           | expect_or_fail | Invalid records prevent the update from succeeding. Manual intervention is required before re-processing.           |
+
 
 
 See https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines
