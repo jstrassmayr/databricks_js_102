@@ -102,8 +102,25 @@ When using "Development" mode, the cluster is not shut down immediately but kept
 Ok, we see data. But the result is rather boring as nothing fancy or unexpected happened. But...
 
 ## Let's get fancy
-In order to get the advantages mentioned above (e.g. table dependency resolution, pipeline self creation, ...) we need an "actual pipeline" of multiple tables and dependencies between them. Let's create them.
+In order to get the advantages mentioned at the beginning of this page (e.g. table dependency resolution, pipeline self creation, ...), we need an "actual pipeline" of multiple tables and dependencies between them. 
 
+Let's create a new DLT-table (for Silver layer) named 'baby_names_prepared' which contains only 3 columns from the ingested 'baby_names_raw' table and renames 1 column.
+- Open your notebook
+- Copy and paste the following cell's code into the next cell
+```python
+@dlt.table(
+  comment="New York popular baby first name data cleaned and prepared for analysis."
+)
+def baby_names_prepared():
+  return (
+    dlt.read("baby_names_raw")
+      .withColumnRenamed("Year", "Year_Of_Birth")
+      .select("Year_Of_Birth", "First_Name", "Count")
+  )
+```
+- Run again: Click on the compute selector (top right) and attach the notebook to your previously created pipeline (e.g. babyname_dlt_johstr) and from now on: Simply hit the "Start" button to start your notebook (or actually the pipeline containing this notebook).
+
+You will now see 2 tables in your pipeline graph: baby_names_raw and baby_names_prepared. Open your Catalog to review the result.
 
 
 See https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines
