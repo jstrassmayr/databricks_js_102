@@ -129,7 +129,7 @@ Proceed as follows
 def baby_names_silver():
   df = dlt.read("baby_names_raw")
   df_renamed = df.withColumnRenamed("Year", "Year_Of_Birth")
-  return df
+  return df_renamed
 ```
 - Run again: Click on the compute selector (top right) and attach the notebook to your previously created pipeline (e.g. babyname_dlt_johstr) and from now on: Simply hit the "Start" button to start your notebook (or actually the pipeline containing this notebook).
 
@@ -152,13 +152,21 @@ You will notice that data validation shows 532 failed rows from the expectation 
 | fail           | expect_or_fail | Invalid records prevent the update from succeeding. Manual intervention is required before re-processing.           |
 
 
-## Dependency resolution
+##Dependency resolution
 To show that the order of the DLT table definitions in the notebook is irrelevant for the execution, you could simply drag and drop the ```Silver layer``` cell above the ```Raw layer``` cell and execute the pipeline again.
 
 ## Gold layer
-- Create new notebook and insert code
-```
+Let's extend our pipeline by creating a table in a Gold layer which contains the top baby names of 2021.
+- Open your folder "dbx_dlt_102" in your Workspace
+- Create a new notebook named "02 Gold"
+- Copy and paste the following cell's code into the first cell
+```python
 # Gold layer
+import dlt
+from pyspark.sql.functions import *
+```
+- Copy and paste the following cell's code into the next cell
+```
 @dlt.table(
   comment="A table summarizing counts of the top baby names for New York for 2021."
 )
@@ -172,9 +180,13 @@ def top_baby_names_2021():
       .limit(10)
   )
 ```
-- Add notebook to pipeline
+- Click 'Delta Live Tables' in the sidebar and open your pipeline
+- Click on 'Settings' (top right) and scroll down to 'Source code'
+- Add your '02 Gold' notebook as additional source code
+- Save and Start your pipeline
 
-See https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines
+This is what you should see:
+![image](https://github.com/user-attachments/assets/93d762ff-fcfa-40fa-8654-8d0613d3fb27)
 
 
 
