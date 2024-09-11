@@ -20,6 +20,11 @@ When asking Databricks to update the DLT-table Y it will run the load of DLT-tab
 
 # Hands-on: Baby names (again) ;-)
 
+## Good to know
+1. If running your DLT-updates does not work, please check [this Article](https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines#requirements) by MS to check for requirements.
+2. A notebook that contains DLT statements cannot be run directly but only from the pipeline itself.
+
+
 See https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines
 
 
