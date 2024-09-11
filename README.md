@@ -106,10 +106,13 @@ When using "Development" mode, the cluster is not shut down immediately but kept
 ![image](https://github.com/user-attachments/assets/3a500b4f-0a33-4aa4-9fc0-99d4178c8b05)
 Ok, we see data. But the result is rather boring as nothing fancy or unexpected happened. But...
 
-## Let's get fancy
-In order to get the advantages mentioned at the beginning of this page (e.g. table dependency resolution, pipeline self creation, ...), we need an "actual pipeline" of multiple tables and dependencies between them.
+## Let's get fancy - Silver layer
+In order to get the advantages mentioned at the beginning of this page (e.g. table dependency resolution, pipeline self creation, invalid data handling...), we need an "actual pipeline" of multiple tables and dependencies between them.
 We will load data from Bronze to Silver layer doing the following enhancements
-- Let's add tests aka. data validations to only ingest valid data into our Silver layer and
+- Let's add tests aka. data validations to only ingest valid data into our Silver layer. We want...
+  - Warnings from rows containing the first name 'OLIVIA'
+  - To drop rows where Count is 0
+  - To fail the pipeline immediately if no first name was given
 - Let's rename the column 'Year' to 'Year_Of_Birth' to make it more understandable in business terms
 
 Proceed as follows
@@ -120,8 +123,9 @@ Proceed as follows
 @dlt.table(
   comment="New York popular baby first name data cleaned and prepared for analysis."
 )
-@dlt.expect("valid_first_name", "First_Name IS NOT NULL")
-@dlt.expect_or_fail("valid_count", "Count > 0")
+@dlt.expect("no_olivias", "First_Name <> 'OLIVIA'")
+@dlt.expect_or_drop("valid_count", "Count > 0")
+@dlt.expect_or_fail("valid_first_name", "First_Name IS NOT NULL")
 def baby_names_silver():
   df = dlt.read("baby_names_raw")
   df_renamed = df.withColumnRenamed("Year", "Year_Of_Birth")
@@ -136,8 +140,9 @@ You will now see 2 tables in your pipeline graph: baby_names_raw and baby_names_
 - Open your specific pipeline
 - Tap on the table for which we defined 'expectations' (silver table)
 - Select the tab 'Data quality' in the right panel.
-![image](https://github.com/user-attachments/assets/d2dad460-62cf-4ce5-bdc5-e0b954ba0a64)
-Nothing should have failed.
+
+![image](https://github.com/user-attachments/assets/68482be5-8cce-42d1-b9db-872507337548)
+You will notice that data validation shows 532 failed rows from the expectation named 'no_olivias'. Since we just wanted a warning but no row-droppings for Olivias, the 'Write'-rate is still 100%.
 
 ### Expectation handling
 | Action         | Type (Python)  | Result                                                                                                              |
@@ -147,6 +152,27 @@ Nothing should have failed.
 | fail           | expect_or_fail | Invalid records prevent the update from succeeding. Manual intervention is required before re-processing.           |
 
 
+## Dependency resolution
+To show that the order of the DLT table definitions in the notebook is irrelevant for the execution, you could simply drag and drop the ```Silver layer``` cell above the ```Raw layer``` cell and execute the pipeline again.
+
+## Gold layer
+- Create new notebook and insert code
+```
+# Gold layer
+@dlt.table(
+  comment="A table summarizing counts of the top baby names for New York for 2021."
+)
+def top_baby_names_2021():
+  return (
+    dlt.read("baby_names_silver")
+      .filter(expr("Year_Of_Birth == 2021"))
+      .groupBy("First_Name")
+      .agg(sum("Count").alias("Total_Count"))
+      .sort(desc("Total_Count"))
+      .limit(10)
+  )
+```
+- Add notebook to pipeline
 
 See https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines
 
