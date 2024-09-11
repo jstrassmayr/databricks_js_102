@@ -1,8 +1,8 @@
-# databricks_js_102 - Delta Live Tables
+# databricks_js_102 - Delta Live Tables (DLT)
 
 This is a follow-up databricks learning repo based on my [databricks_js_101](https://github.com/jstrassmayr/databricks_js_101). Its main focus are [Delta Live Tables aka. DLT](https://www.databricks.com/de/product/delta-live-tables).
 
-# What is DLT (for)
+# What is DLT
 DLT is a concept and tool-set that helps you building ETL pipelines. 
 Instead of building your transformations AND orchestrations AND clusters etc you only have to define the transformations on your data.
 DLT handles orchestration-pipelines (=transformation dependencies), cluster management, monitoring, data quality and error handling for you.
@@ -21,9 +21,25 @@ When asking Databricks to update the DLT-table Y it will run the load of DLT-tab
 # Hands-on: Baby names (again) ;-)
 
 ## Good to know
-1. If running your DLT-updates does not work, please check [this Article](https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines#requirements) by MS to check for requirements.
+1. If running your DLT-code does not work, please check [this Article](https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines#requirements) by MS to check for upfront requirements.
 2. A notebook that contains DLT statements cannot be run directly but only from the pipeline itself.
 
+## Import the DLT module
+```python
+import dlt
+from pyspark.sql.functions import *
+```
+
+## Download the input data
+```python
+import os
+
+os.environ["UNITY_CATALOG_VOLUME_PATH"] = "/Volumes/<catalog-name>/<schema-name>/<volume-name>/"
+os.environ["DATASET_DOWNLOAD_URL"] = "https://health.data.ny.gov/api/views/jxy9-yhdk/rows.csv"
+os.environ["DATASET_DOWNLOAD_FILENAME"] = "rows.csv"
+
+dbutils.fs.cp(f"{os.environ.get('DATASET_DOWNLOAD_URL')}", f"{os.environ.get('UNITY_CATALOG_VOLUME_PATH')}{os.environ.get('DATASET_DOWNLOAD_FILENAME')}")
+```
 
 See https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/tutorial-pipelines
 
