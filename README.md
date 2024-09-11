@@ -40,7 +40,7 @@ import dlt
 from pyspark.sql.functions import *
 ```
 
-# Download data to Raw
+# Download data - to Raw layer
 First we need to download the babyname data from ny.gov into our Raw layer.
 - Copy and paste the following cell's code into the first cell of your newly created notebook
 - Modify the value of the UNITY_CATALOG_VOLUME_PATH env. variable to meet our requirements. Hint: You can copy the full path from the overview-page of your volume.
@@ -56,7 +56,7 @@ os.environ["DATASET_DOWNLOAD_FILENAME"] = "rows.csv"
 dbutils.fs.cp(f"{os.environ.get('DATASET_DOWNLOAD_URL')}", f"{os.environ.get('UNITY_CATALOG_VOLUME_PATH')}{os.environ.get('DATASET_DOWNLOAD_FILENAME')}")
 ```
 
-# Let's create our first DLT-table
+# Let's create our first DLT-table - in Bronze layer
 Let's load data from our CSV file into a table in our Bronze layer with only one modification: The column 'First Name' must be renamed as space-characters (" ") are not allowed in column names.
 - Copy and paste the following cell's code into the next cell.
   - Note: The ```@dlt.table``` decorator tells the DLT-system to create a table that contains the result of a DataFrame returned by a function. Add the ```@dlt.table``` decorator before any Python function definition that returns a *Spark DataFrame* to register a new table in Delta Live Tables.
