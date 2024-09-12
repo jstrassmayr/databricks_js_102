@@ -138,7 +138,7 @@ You will now see 2 tables in your pipeline graph: baby_names_raw and baby_names_
 ## Verify data quality
 - Click on 'Delta Live Tables' in the left sidebar
 - Open your specific pipeline
-- Tap on the table for which we defined 'expectations' (silver table)
+- Tap on the table for which we defined '[expectations](https://learn.microsoft.com/en-us/azure/databricks/delta-live-tables/expectations)' (silver table)
 - Select the tab 'Data quality' in the right panel.
 
 ![image](https://github.com/user-attachments/assets/68482be5-8cce-42d1-b9db-872507337548)
