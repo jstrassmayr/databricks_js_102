@@ -8,7 +8,7 @@ Instead of building your transformations AND orchestrations AND clusters etc you
 DLT handles orchestration-pipelines (=transformation dependencies), cluster management, monitoring, data quality and error handling for you.
 
 ## How
-You create your DLT objects (Tables, Streaming Tables, Views) by defining where they read from (data source) and where they write to (data sink). At runtime, Databricks will automatically resolve the dependencies for you correctly. 
+You create your DLT objects ([Tables, Streaming Tables, Views](https://docs.databricks.com/en/delta-live-tables/index.html#what-are-delta-live-tables-datasets)) by defining where they read from (data source) and where they write to (data sink). At runtime, Databricks will automatically resolve the dependencies for you correctly. 
 
 *Example:* Let's assume you have this data objects:
 1) DLT-table X gets its data from datasource A and
