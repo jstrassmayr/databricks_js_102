@@ -193,6 +193,7 @@ def top_baby_names_2021():
 - Add your '02 Gold' notebook as additional source code
 - Save and Start your pipeline
 
+
 This is what you should see:
 ![image](https://github.com/user-attachments/assets/93d762ff-fcfa-40fa-8654-8d0613d3fb27)
 
