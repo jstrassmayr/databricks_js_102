@@ -1,7 +1,7 @@
 See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables/index.html).
 
 
-# 3 Data set types
+# 3 Dataset types
 - DLT Tables = Materialized Views
 - DLT Streaming Tables
 - DLT Views
