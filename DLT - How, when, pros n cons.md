@@ -1,4 +1,4 @@
-See What is [Delta Live Tables](https://docs.databricks.com/en/delta-live-tables/index.html).
+See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables/index.html).
 
 
 # 3 Data set types
