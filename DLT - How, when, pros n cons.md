@@ -48,3 +48,19 @@ _Disadvantages_
 - Vendor Lock-In: DLT is optimized for the Databricks ecosystem. Migrating to another platform could be complex.
 
 
+
+
+
+# Expectations
+- Define requirements on row level to attributes of that row.
+- Can define a behaviour for cases of errors e.g. expect_or_fail, expect_or_drop_row.
+
+
+# Coding Practices
+* https://www.databricks.com/blog/applying-software-development-devops-best-practices-delta-live-table-pipelines
+* https://www.sicara.fr/blog-technique/databricks-delta-live-tables-software-engineering-best-practices
+* Use Poetry for Python dependency management (this is mentioned in both links above): https://python-poetry.org/
+* Use Nutter for Testing Python notebooks: https://github.com/microsoft/nutter
+![image](https://github.com/user-attachments/assets/4592f48a-f048-41e3-b8d7-a63811c5bef5)
+
+
