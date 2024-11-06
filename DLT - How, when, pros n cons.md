@@ -8,8 +8,8 @@ _DLT Tables = Materialized Views_
 - Note: If I modify data (using INSERT, UPDATE, …) of a normal DLT table, the modification is undone by the next pipeline-run and the table is fully rewritten.
 
 _DLT Streaming Tables_
-By default, streaming tables require append-only sources.
-Each record is processed exactly once.
+- By default, streaming tables require append-only sources.
+- Each record is processed exactly once.
 - Note: If I modify data (using INSERT, UPDATE, …) of a streaming DLT, the modification is kept by the next pipeline-run as only new data is added and the "current" data is untouched.
 
 _DLT Views_
