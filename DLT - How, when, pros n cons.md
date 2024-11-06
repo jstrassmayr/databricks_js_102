@@ -1,3 +1,5 @@
+See What is [Delta Live Tables](https://docs.databricks.com/en/delta-live-tables/index.html).
+
 
 # 3 Data set types
 
@@ -8,8 +10,8 @@
 - Mat views are powerful because they can handle any changes in the input. Each time the pipeline updates, query results are recalculated to reflect changes in upstream datasets.
 - Note: If I modify data (using INSERT, UPDATE, …) of a normal DLT table, the modification is undone by the next pipeline-run and the table is fully rewritten.
 
-_Disadvantages/Limitations_
-- Identity columns
+### Disadvantages/Limitations
+- Identity columns are not supported with tables/mat. views that are the target of APPLY CHANGES INTO and might be recomputed during updates. For this reason, Databricks recommends using identity columns in Delta Live Tables only with streaming tables. See [Use identity columns in Delta Lake](https://docs.databricks.com/en/delta/generated-columns.html#identity&language-python).
 - now() and "system"-datetime columns
 - When will work incrementally, when will it do a full recompute?
 - What if I want to change the logic of my code? -> Recompute?
@@ -22,7 +24,7 @@ _Disadvantages/Limitations_
 - Good for most ingestion workloads aka. Bronze layer
 - Note: If I modify data (using INSERT, UPDATE, …) of a streaming DLT, the modification is kept by the next pipeline-run as only new data is added and the "current" data is untouched.
 
-_Disadvantages/Limitations_
+### Disadvantages/Limitations
 - Guess by Johannes: Aggregations?
 
 ## DLT Views
@@ -34,18 +36,26 @@ _Disadvantages/Limitations_
 
 
 
+# Pipelines
+A pipeline contains materialized views and streaming tables declared in Python or SQL source files. Delta Live Tables infers the dependencies between these tables, ensuring updates occur in the correct order. For each dataset, Delta Live Tables compares the current state with the desired state and proceeds to create or update datasets using efficient processing methods.
+
+
+
 
 # Pros and Cons of DLT
 _Advantages_
-- Automatic dependency resolution of tasks/notebooks in pipeline orchestration. This reduces the complexity of pipeline creation and maintenance.
+- Automatic dependency resolution of tables/notebooks in pipeline orchestration. This reduces the complexity of pipeline creation and maintenance.
 - Automatic cluster management (which cluster, how many workers)
 - Incremental Data Processing: DLT supports incremental processing, which is resource-efficient as only new or changed data is processed (see Checkpoints). 
 - Data Quality and Validation: With "Expectations," users can define validation rules to ensure data integrity. Invalid data is quarantined, enabling a more reliable data flow and reducing the likelihood of bad data impacting downstream processes.
+- DLT performs maintenance tasks on tables being updated. Maintenance can improve query performance and reduce cost by removing old versions of tables. 
 
 _Disadvantages_
-- Execution of DLT code is not fully possible while developing
+- Execution of DLT code is not fully possible while developing. 
 - The DLT-engine: It is hard to know what is going on under the DLT-hood e.g. to know when a full recompute is done or not.
 - Vendor Lock-In: DLT is optimized for the Databricks ecosystem. Migrating to another platform could be complex.
+- You cannot use Delta Sharing with a Delta Live Tables materialized view or streaming table published to Unity Catalog.
+  
 
 
 
@@ -63,4 +73,7 @@ _Disadvantages_
 * Use Nutter for Testing Python notebooks: https://github.com/microsoft/nutter
 
 
+# Sources
+- https://docs.databricks.com/en/delta-live-tables/index.html
+- 
 
