@@ -27,12 +27,12 @@ _DLT Views_
 
 
 # Pros and Cons of DLT
-**Advantages**
+_Advantages_
 - Automatic dependency resolution of tasks/notebooks in pipeline orchestration. This reduces the complexity of pipeline creation and maintenance.
 - Incremental Data Processing: DLT supports incremental processing, which is resource-efficient as only new or changed data is processed (see Checkpoints). 
 - Data Quality and Validation: With "Expectations," users can define validation rules to ensure data integrity. Invalid data is quarantined, enabling a more reliable data flow and reducing the likelihood of bad data impacting downstream processes.
 
-**Disadvantages**
+_Disadvantages_
 - Execution of DLT code is not fully possible while developing
 - The DLT-engine: It is hard to know what is going on under the DLT-hood e.g. to know when a full recompute is done or not.
 - Vendor Lock-In: DLT is optimized for the Databricks ecosystem. Migrating to another platform could be complex.
