@@ -1,5 +1,5 @@
 
-#3 Data set types
+# 3 Data set types
 
 _DLT Tables = Materialized Views_
 - Records are processed as required to return accurate results for the current data state. Materialized views should be used for data sources with updates, deletions, or aggregations, and for change data capture processing (CDC).
