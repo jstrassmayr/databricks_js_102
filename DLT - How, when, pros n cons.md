@@ -2,15 +2,23 @@ See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables
 
 
 # 3 Data set types
+- DLT Tables = Materialized Views
+- DLT Streaming Tables
+- DLT Views
 
-## DLT Tables = Materialized Views
+# DLT Tables = Materialized Views
 - Records are processed as required to return accurate results for the current data state. Conclusion: DLT keeps a "data state" internally.
-- Materialized views should be used for data processing tasks such as transformations (updates, deletions...), aggregations, Change-Data-Capture or pre-computing slow queries and frequently used computations.
 - The Delta Live Tables runtime automatically creates tables in the Delta format and ensures those tables are updated with the latest result of the query that creates the table.
 - Mat views are powerful because they can handle any changes in the input. Each time the pipeline updates, query results are recalculated to reflect changes in upstream datasets.
 - Note: If I modify data (using INSERT, UPDATE, …) of a normal DLT table, the modification is undone by the next pipeline-run and the table is fully rewritten.
 
-### Disadvantages/Limitations
+## Consider using a materialized view when:
+- Materialized views should be used for data processing tasks such as transformations (updates, deletions...), aggregations, Change-Data-Capture or pre-computing slow queries and frequently used computations.
+- Multiple downstream queries consume the table. Because views are computed on demand, the view is re-computed every time the view is queried.
+- Other pipelines, jobs, or queries consume the table. Because views are not materialized, you can only use them in the same pipeline.
+- You want to view the results of a query during development. Because tables are materialized and can be viewed and queried outside of the pipeline, using tables during development can help validate the correctness of computations. After validating, convert queries that do not require materialization into views.
+
+## Disadvantages/Limitations
 - Identity columns are not supported with tables/mat. views that are the target of APPLY CHANGES INTO and might be recomputed during updates. For this reason, Databricks recommends using identity columns in Delta Live Tables only with streaming tables. See [Use identity columns in Delta Lake](https://docs.databricks.com/en/delta/generated-columns.html#identity&language-python).
 - now() and "system"-datetime columns
 - When will work incrementally, when will it do a full recompute?
@@ -18,21 +26,30 @@ See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables
 - Full recomputes will increase costs significantly when working on big tables
 
 
-## DLT Streaming Tables
+# DLT Streaming Tables
 - Each input record is processed exactly once. DLT keeps track of what it already processed.
 - Streaming tables are designed for data sources that are append-only.
-- Good for most ingestion workloads aka. Bronze layer
 - Note: If I modify data (using INSERT, UPDATE, …) of a streaming DLT, the modification is kept by the next pipeline-run as only new data is added and the "current" data is untouched.
 
-### Disadvantages/Limitations
+## Consider using a streaming table when:
+- Ingesting data e.g. into the Bronze layer
+- A query is defined against a data source that is continuously or incrementally growing.
+- Query results should be computed incrementally.
+- The pipeline needs high throughput and low latency.
+
+## Disadvantages/Limitations
 - Guess by Johannes: Aggregations?
 
-## DLT Views
+# DLT Views
 - Records are processed every time the view is queried. Use views for intermediate transformations and data quality checks that should not be published to public datasets. But: They leverage caching algorithms to not always have to query the source.
 - Are similar to a temporary view in SQL 
 - Allow you to name and reuse a given computation/transformation of a source
 - Are available from within a pipeline only and cannot be queried interactively after the pipeline
 
+## Consider using a view to do the following:
+- Break a large or complex query that you want into easier-to-manage queries.
+- Validate intermediate results using expectations.
+- Reduce storage and compute costs for results you don’t need to persist. Because tables are materialized, they require additional computation and storage resources.
 
 
 
