@@ -15,7 +15,7 @@ __DLT Views__
 - are similar to a temporary view in SQL 
 - are an alias for some computation (or transformation)
 - allow you to reuse a given computation/transformation as a source (for more than one table)
-- are available from within a pipeline only and cannot be queried interactively after the pipeline![image](https://github.com/user-attachments/assets/63955163-410f-4083-86e0-a6a1f22168cf)
+- are available from within a pipeline only and cannot be queried interactively after the pipeline
 
 
 
