@@ -2,6 +2,14 @@
 
 This is a follow-up databricks learning repo based on my [databricks_js_101](https://github.com/jstrassmayr/databricks_js_101). Its main focus are [Delta Live Tables aka. DLT](https://www.databricks.com/de/product/delta-live-tables).
 
+# Topics covered
+- What is DLT
+- Hands-on: Baby names (again) ;-)
+- Download data - to Raw layer
+- Our first DLT-table - in Bronze layer
+- Let's create our first DLT-pipeline
+- Let's get fancy - Silver layer
+
 # What is DLT
 DLT is a concept and tool-set that helps you building ETL pipelines. 
 Instead of building your transformations AND orchestrations AND clusters etc you only have to define the transformations on your data.
