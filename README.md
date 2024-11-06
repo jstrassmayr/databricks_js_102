@@ -1,6 +1,7 @@
 # databricks_js_102 - Delta Live Tables (DLT)
 
-This is a follow-up databricks learning repo based on my [databricks_js_101](https://github.com/jstrassmayr/databricks_js_101). Its main focus are [Delta Live Tables aka. DLT](https://www.databricks.com/de/product/delta-live-tables).
+This is a follow-up databricks learning repo based on my [databricks_js_101](https://github.com/jstrassmayr/databricks_js_101). Its main focus is working with [Delta Live Tables aka. DLT](https://www.databricks.com/de/product/delta-live-tables). To see how and when (not) to use DLT and potential pros and cons, see [this page](https://github.com/jstrassmayr/databricks_js_102/blob/main/DLT%20-%20How%2C%20when%2C%20pros%20n%20cons.md).
+
 
 # Topics covered
 - What is DLT
