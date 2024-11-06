@@ -55,6 +55,7 @@ _Disadvantages_
 - The DLT-engine: It is hard to know what is going on under the DLT-hood e.g. to know when a full recompute is done or not.
 - Vendor Lock-In: DLT is optimized for the Databricks ecosystem. Migrating to another platform could be complex.
 - You cannot use Delta Sharing with a Delta Live Tables materialized view or streaming table published to Unity Catalog.
+- The underlying files supporting materialized views might include data from upstream tables (including possible personally identifiable information) that do not appear in the materialized view definition. This data is automatically added to the underlying storage to support incremental refreshing of materialized views. Because the underlying files of a materialized view might risk exposing data from upstream tables not part of the materialized view schema, Databricks recommends not sharing the underlying storage with untrusted downstream consumers. For example, suppose a materialized view definition includes a COUNT(DISTINCT field_a) clause. Even though the materialized view definition only includes the aggregate COUNT DISTINCT clause, the underlying files will contain a list of the actual values of field_a.
   
 
 
@@ -75,5 +76,6 @@ _Disadvantages_
 
 # Sources
 - https://docs.databricks.com/en/delta-live-tables/index.html
+- https://docs.databricks.com/en/delta-live-tables/unity-catalog.html
 - 
 
