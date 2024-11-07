@@ -26,24 +26,24 @@ _Disadvantages_
 
 # DLT Tables = Materialized Views
 - The Delta Live Tables runtime automatically creates MVs in the Delta format and ensures they contain the latest result of the query.
-- MVs results are refreshed incrementally avoiding the need to completely rebuild the view when new data arrives. An internal state is kept for this.
+- MVs results are [refreshed incrementally](https://docs.databricks.com/en/optimizations/incremental-refresh.html) avoiding the need to completely rebuild the view when new data arrives. An internal state is kept for this. This is done by Databricks in a "best-effort attempt".
 - MVs are powerful because they can handle any changes in the input. Each time the pipeline updates, query results are recalculated to reflect changes in upstream datasets.
 - Note: If I modify data (using INSERT, UPDATE, …) of a normal DLT table, the modification is undone by the next pipeline-run and the table is rewritten.
 
 ## Consider using a materialized view when:
 - Materialized views should be used for data processing tasks such as transformations (updates, deletions...), aggregations, Change-Data-Capture or pre-computing slow queries and frequently used computations e.g. in Silver- and Gold-Layer.
 - Multiple downstream queries consume the table. Because views are computed on demand, the view is re-computed every time the view is queried.
-- Other pipelines, jobs, or queries consume the table. Because views are not materialized, you can only use them in the same pipeline.
 - You want to view the results of a query during development. Because tables are materialized and can be viewed and queried outside of the pipeline, using tables during development can help validate the correctness of computations. After validating, convert queries that do not require materialization into views.
 
 ## Disadvantages/Limitations
-- Identity columns are not supported with tables/mat. views that are the target of APPLY CHANGES INTO and might be recomputed during updates. For this reason, Databricks recommends using identity columns in Delta Live Tables only with streaming tables. See [Use identity columns in Delta Lake](https://docs.databricks.com/en/delta/generated-columns.html#identity&language-python).
-- In order to allow incremental loads you have to set the table property 'enableChangeDataFeed' to true on the source table. E.g. ```ALTER TABLE table1 SET TBLPROPERTIES (delta.enableChangeDataFeed = true);```
+- [Incremental Refresh](https://docs.databricks.com/en/optimizations/incremental-refresh.html)
+  - Incremental refresh for MVs requires your pipeline to be serverless (aka. use a serverless cluster).
+  - Incremental refresh needs you to have the table property 'enableChangeDataFeed' set to true on the source table. E.g. ```ALTER TABLE table1 SET TBLPROPERTIES (delta.enableChangeDataFeed = true);```.
+  - Do not use MVs for datasets whose sources often experience full refreshes aka. changes in all/many rows. This is especially true for big tables.
+- MVs do not support identity columns or surrogate keys. See [this](https://docs.databricks.com/en/views/materialized.html#limitations).
+- Identity columns are not supported with MVs that are the target of APPLY CHANGES INTO and might be recomputed during updates. For this reason, Databricks recommends using identity columns in Delta Live Tables only with streaming tables. See [Use identity columns in Delta Lake](https://docs.databricks.com/en/delta/generated-columns.html#identity&language-python).
 - now() and "system"-datetime columns
-- Full recomputes will increase costs and runtime when working on big tables
 - TBD: Late arriving dimensions/Early arriving facts are not a problem for MVs as the runtime notices the update(s) in the dimension and updates the result in the target table.
-- TBD: When will work incrementally, when will it do a full recompute?
-- TBD: What if I want to change the logic of my code? -> Recompute?
 
 
 # DLT Streaming Tables
@@ -53,7 +53,10 @@ _Disadvantages_
 
 ## Consider using a streaming table when:
 - Ingesting data e.g. into the Bronze-Layer
-- A query is defined against a data source that is continuously or incrementally growing.
+- A query is defined against a data source that...
+  - is continuously or incrementally growing or
+  - is using Auto Loader or
+  - doesn’t retain data history (such as Kafka) or sources where you plan to delete or archive data after a while
 - Query results should be computed incrementally.
 - The pipeline needs high throughput and low latency.
 
@@ -102,3 +105,5 @@ A pipeline contains materialized views and streaming tables declared in Python o
 - https://docs.databricks.com/en/delta-live-tables/transform.html
 - https://www.databricks.com/blog/introducing-materialized-views-and-streaming-tables-databricks-sql
 - https://docs.databricks.com/en/tables/streaming.html
+- https://docs.databricks.com/en/views/materialized.html#limitations
+- https://docs.databricks.com/en/optimizations/incremental-refresh.html
