@@ -98,11 +98,6 @@ A pipeline contains materialized views and streaming tables declared in Python o
 - Can define a behaviour for cases of errors e.g. expect_or_fail, expect_or_drop_row.
 
 
-# Coding Practices
-* https://www.databricks.com/blog/applying-software-development-devops-best-practices-delta-live-table-pipelines
-* https://www.sicara.fr/blog-technique/databricks-delta-live-tables-software-engineering-best-practices
-* Use Poetry for Python dependency management (this is mentioned in both links above): https://python-poetry.org/
-* Use Nutter for Testing Python notebooks: https://github.com/microsoft/nutter
 
 
 # Sources
