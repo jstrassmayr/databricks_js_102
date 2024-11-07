@@ -1,6 +1,24 @@
 See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables/index.html).
 
 
+# Pros and Cons of DLT
+_Advantages_
+- Automatic dependency resolution of tables/notebooks in pipeline orchestration. This reduces the complexity of pipeline creation and maintenance.
+- Automatic cluster management (which cluster, how many workers)
+- Incremental Data Processing: DLT supports incremental processing, which is resource-efficient as only new or changed data is processed (see Checkpoints). 
+- Data Quality and Validation: With "Expectations," users can define validation rules to ensure data integrity. Invalid data is quarantined, enabling a more reliable data flow and reducing the likelihood of bad data impacting downstream processes.
+- DLT performs maintenance tasks on tables being updated. Maintenance can improve query performance and reduce cost by removing old versions of tables. 
+
+_Disadvantages_
+- Execution of DLT code is not fully possible while developing. 
+- The DLT-engine: It is hard to know what is going on under the DLT-hood e.g. to know when a full recompute is done or not.
+- Vendor Lock-In: DLT is optimized for the Databricks ecosystem. Migrating to another platform could be complex.
+- You cannot use Delta Sharing with a Delta Live Tables materialized view or streaming table published to Unity Catalog.
+- The underlying files supporting materialized views might include data from upstream tables (including possible personally identifiable information) that do not appear in the materialized view definition. This data is automatically added to the underlying storage to support incremental refreshing of materialized views. Because the underlying files of a materialized view might risk exposing data from upstream tables not part of the materialized view schema, Databricks recommends not sharing the underlying storage with untrusted downstream consumers. For example, suppose a materialized view definition includes a COUNT(DISTINCT field_a) clause. Even though the materialized view definition only includes the aggregate COUNT DISTINCT clause, the underlying files will contain a list of the actual values of field_a.
+
+
+
+
 # 3 Dataset types
 - DLT Tables = Materialized Views
 - DLT Streaming Tables
@@ -55,24 +73,6 @@ See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables
 
 # Pipelines
 A pipeline contains materialized views and streaming tables declared in Python or SQL source files. Delta Live Tables infers the dependencies between these tables, ensuring updates occur in the correct order. For each dataset, Delta Live Tables compares the current state with the desired state and proceeds to create or update datasets using efficient processing methods.
-
-
-
-
-# Pros and Cons of DLT
-_Advantages_
-- Automatic dependency resolution of tables/notebooks in pipeline orchestration. This reduces the complexity of pipeline creation and maintenance.
-- Automatic cluster management (which cluster, how many workers)
-- Incremental Data Processing: DLT supports incremental processing, which is resource-efficient as only new or changed data is processed (see Checkpoints). 
-- Data Quality and Validation: With "Expectations," users can define validation rules to ensure data integrity. Invalid data is quarantined, enabling a more reliable data flow and reducing the likelihood of bad data impacting downstream processes.
-- DLT performs maintenance tasks on tables being updated. Maintenance can improve query performance and reduce cost by removing old versions of tables. 
-
-_Disadvantages_
-- Execution of DLT code is not fully possible while developing. 
-- The DLT-engine: It is hard to know what is going on under the DLT-hood e.g. to know when a full recompute is done or not.
-- Vendor Lock-In: DLT is optimized for the Databricks ecosystem. Migrating to another platform could be complex.
-- You cannot use Delta Sharing with a Delta Live Tables materialized view or streaming table published to Unity Catalog.
-- The underlying files supporting materialized views might include data from upstream tables (including possible personally identifiable information) that do not appear in the materialized view definition. This data is automatically added to the underlying storage to support incremental refreshing of materialized views. Because the underlying files of a materialized view might risk exposing data from upstream tables not part of the materialized view schema, Databricks recommends not sharing the underlying storage with untrusted downstream consumers. For example, suppose a materialized view definition includes a COUNT(DISTINCT field_a) clause. Even though the materialized view definition only includes the aggregate COUNT DISTINCT clause, the underlying files will contain a list of the actual values of field_a.
   
 
 
