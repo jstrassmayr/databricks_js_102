@@ -6,7 +6,7 @@ _Advantages_
 - Automatic dependency resolution of tables/notebooks in pipeline orchestration. This reduces the complexity of pipeline creation and maintenance.
 - Automatic cluster management (which cluster, how many workers)
 - Incremental Data Processing: DLT supports incremental processing, which is resource-efficient as only new or changed data is processed (see Checkpoints).
-- DLT simplifies change data capture (CDC) with the APPLY CHANGES APIs.
+- DLT simplifies change data capture (CDC) with the APPLY CHANGES APIs as it extends the MERGE INTO APIs from Delta Tables.
 - Data Quality and Validation: With Expectations users can define validation rules to ensure data integrity. Invalid data is quarantined, enabling a more reliable data flow and reducing the likelihood of bad data impacting downstream processes.
 - DLT performs maintenance tasks on tables being updated. Maintenance can improve query performance and reduce cost by removing old versions of tables. 
 
