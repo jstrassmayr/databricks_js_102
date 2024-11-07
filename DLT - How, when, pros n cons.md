@@ -21,9 +21,9 @@ See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables
 ## Disadvantages/Limitations
 - Identity columns are not supported with tables/mat. views that are the target of APPLY CHANGES INTO and might be recomputed during updates. For this reason, Databricks recommends using identity columns in Delta Live Tables only with streaming tables. See [Use identity columns in Delta Lake](https://docs.databricks.com/en/delta/generated-columns.html#identity&language-python).
 - now() and "system"-datetime columns
-- When will work incrementally, when will it do a full recompute?
-- What if I want to change the logic of my code? -> Recompute?
-- Full recomputes will increase costs significantly when working on big tables
+- TBD: When will work incrementally, when will it do a full recompute?
+- TBD: What if I want to change the logic of my code? -> Recompute?
+- Full recomputes will increase costs and runtime when working on big tables
 
 
 # DLT Streaming Tables
