@@ -13,7 +13,7 @@ See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables
 - Note: If I modify data (using INSERT, UPDATE, …) of a normal DLT table, the modification is undone by the next pipeline-run and the table is rewritten.
 
 ## Consider using a materialized view when:
-- Materialized views should be used for data processing tasks such as transformations (updates, deletions...), aggregations, Change-Data-Capture or pre-computing slow queries and frequently used computations.
+- Materialized views should be used for data processing tasks such as transformations (updates, deletions...), aggregations, Change-Data-Capture or pre-computing slow queries and frequently used computations e.g. in Silver- and Gold-Layer.
 - Multiple downstream queries consume the table. Because views are computed on demand, the view is re-computed every time the view is queried.
 - Other pipelines, jobs, or queries consume the table. Because views are not materialized, you can only use them in the same pipeline.
 - You want to view the results of a query during development. Because tables are materialized and can be viewed and queried outside of the pipeline, using tables during development can help validate the correctness of computations. After validating, convert queries that do not require materialization into views.
@@ -32,7 +32,7 @@ See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables
 - Note: If I modify data (using INSERT, UPDATE, …) of a streaming DLT, the modification is kept even after the next pipeline-run as only new data is added and the "current" data is untouched.
 
 ## Consider using a streaming table when:
-- Ingesting data e.g. into the Bronze layer
+- Ingesting data e.g. into the Bronze-Layer
 - A query is defined against a data source that is continuously or incrementally growing.
 - Query results should be computed incrementally.
 - The pipeline needs high throughput and low latency.
