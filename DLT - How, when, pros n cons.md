@@ -39,9 +39,10 @@ _Disadvantages_
 ## Disadvantages/Limitations
 - Identity columns are not supported with tables/mat. views that are the target of APPLY CHANGES INTO and might be recomputed during updates. For this reason, Databricks recommends using identity columns in Delta Live Tables only with streaming tables. See [Use identity columns in Delta Lake](https://docs.databricks.com/en/delta/generated-columns.html#identity&language-python).
 - now() and "system"-datetime columns
+- Full recomputes will increase costs and runtime when working on big tables
+- TBD: Late arriving dimensions/Early arriving facts are not a problem for MVs as the runtime notices the update(s) in the dimension and updates the result in the target table.
 - TBD: When will work incrementally, when will it do a full recompute?
 - TBD: What if I want to change the logic of my code? -> Recompute?
-- Full recomputes will increase costs and runtime when working on big tables
 
 
 # DLT Streaming Tables
@@ -56,19 +57,22 @@ _Disadvantages_
 - The pipeline needs high throughput and low latency.
 
 ## Disadvantages/Limitations
-- Certain transformations that depend on the entire history of the dataset (e.g. aggregations) may not be efficiently handled in a streaming context. But: DLT tries to solve this by keeping intermediate data in the background.
+- Certain transformations that depend on the entire history of the dataset (e.g. aggregations) may not be efficiently handled in a streaming context. But: DLT tries to solve this by keeping intermediate data in the background. See [this link](https://docs.databricks.com/en/delta-live-tables/transform.html#calculate-aggregates-efficiently).
+- Late arriving dimensions/Early arriving facts: With each pipeline update, new records from the stream are joined with the most current snapshot of the static dimension-table. If records are added or updated in the static dim-table after data from the streaming table has been processed, the resultant records are not recalculated unless a full refresh is performed. See [this example](https://docs.databricks.com/en/delta-live-tables/transform.html#stream-static-joins).
+
 
 # DLT Views
 - Records are processed every time the view is queried. Use views for intermediate transformations and data quality checks that should not be published to public datasets. But: They leverage caching algorithms to not always have to query the source.
 - Are similar to a temporary view in SQL 
 - Allow you to name and reuse a given computation/transformation of a source
-- Are available from within a pipeline only and cannot be queried interactively after the pipeline
 
 ## Consider using a view to do the following:
 - Break a large or complex query that you want into easier-to-manage queries.
 - Validate intermediate results using expectations.
 - Reduce storage and compute costs for results you don’t need to persist. Because tables are materialized, they require additional computation and storage resources.
 
+## Disadvantages/Limitations
+- Are available from within a pipeline only and cannot be queried interactively after the pipeline
 
 
 # Pipelines
@@ -94,4 +98,6 @@ A pipeline contains materialized views and streaming tables declared in Python o
 # Sources
 - https://docs.databricks.com/en/delta-live-tables/index.html
 - https://docs.databricks.com/en/delta-live-tables/unity-catalog.html
+- https://docs.databricks.com/en/delta-live-tables/transform.html
 - https://www.databricks.com/blog/introducing-materialized-views-and-streaming-tables-databricks-sql
+- https://docs.databricks.com/en/tables/streaming.html
