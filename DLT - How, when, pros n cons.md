@@ -38,6 +38,7 @@ _Disadvantages_
 
 ## Disadvantages/Limitations
 - Identity columns are not supported with tables/mat. views that are the target of APPLY CHANGES INTO and might be recomputed during updates. For this reason, Databricks recommends using identity columns in Delta Live Tables only with streaming tables. See [Use identity columns in Delta Lake](https://docs.databricks.com/en/delta/generated-columns.html#identity&language-python).
+- In order to allow incremental loads you have to set the table property 'enableChangeDataFeed' to true on the source table. E.g. ```ALTER TABLE table1 SET TBLPROPERTIES (delta.enableChangeDataFeed = true);```
 - now() and "system"-datetime columns
 - Full recomputes will increase costs and runtime when working on big tables
 - TBD: Late arriving dimensions/Early arriving facts are not a problem for MVs as the runtime notices the update(s) in the dimension and updates the result in the target table.
