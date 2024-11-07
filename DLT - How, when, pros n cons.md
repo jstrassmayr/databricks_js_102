@@ -10,10 +10,10 @@ _Advantages_
 - DLT performs maintenance tasks on tables being updated. Maintenance can improve query performance and reduce cost by removing old versions of tables. 
 
 _Disadvantages_
+- You cannot use Delta Sharing with a Delta Live Tables materialized view or streaming table published to Unity Catalog.
 - Execution of DLT code is not fully possible while developing. 
 - The DLT-engine: It is hard to know what is going on under the DLT-hood e.g. to know when a full recompute is done or not.
 - Vendor Lock-In: DLT is optimized for the Databricks ecosystem. Migrating to another platform could be complex.
-- You cannot use Delta Sharing with a Delta Live Tables materialized view or streaming table published to Unity Catalog.
 - The underlying files supporting materialized views might include data from upstream tables (including possible personally identifiable information) that do not appear in the materialized view definition. This data is automatically added to the underlying storage to support incremental refreshing of materialized views. Because the underlying files of a materialized view might risk exposing data from upstream tables not part of the materialized view schema, Databricks recommends not sharing the underlying storage with untrusted downstream consumers. For example, suppose a materialized view definition includes a COUNT(DISTINCT field_a) clause. Even though the materialized view definition only includes the aggregate COUNT DISTINCT clause, the underlying files will contain a list of the actual values of field_a.
 
 
@@ -50,6 +50,7 @@ _Disadvantages_
   - Some query-clauses needs you to have the table property 'delta.enableRowTracking' set to true on the source table. See [this list](https://docs.databricks.com/en/optimizations/incremental-refresh.html#support-for-materialized-view-incremental-refresh)
 - MVs do not support identity columns or surrogate keys. See [this](https://docs.databricks.com/en/views/materialized.html#limitations).
 - Identity columns are not supported with MVs that are the target of APPLY CHANGES INTO and might be recomputed during updates. For this reason, Databricks recommends using identity columns in Delta Live Tables only with streaming tables. See [Use identity columns in Delta Lake](https://docs.databricks.com/en/delta/generated-columns.html#identity&language-python).
+- MVs do not support time travel
 - Late arriving dimensions/Early arriving facts are not a problem for MVs as the runtime notices the update(s) in the dimension and updates the result in the target table.
 
 > [!WARNING]
