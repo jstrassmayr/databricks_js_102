@@ -24,6 +24,10 @@ _Disadvantages_
 - DLT Streaming Tables
 - DLT Views
 
+> [!NOTE]
+> [Materialized Views](https://docs.databricks.com/en/views/materialized.html) and [Streaming Tables](https://docs.databricks.com/en/tables/streaming-tables-how-it-works.html#streaming-table-limitations) can also be defined outside of DLT but in Databricks SQL. 
+
+
 # DLT Tables = Materialized Views
 - The Delta Live Tables runtime automatically creates MVs in the Delta format and ensures they contain the latest result of the query.
 - MVs results are [refreshed incrementally](https://docs.databricks.com/en/optimizations/incremental-refresh.html) wherever possible avoiding the need to completely rebuild the view when new data arrives. An internal state is kept for this. This is done by Databricks in a "best-effort attempt".
