@@ -29,7 +29,7 @@ See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables
 # DLT Streaming Tables
 - Each input record is processed exactly once. DLT keeps track of what it already processed.
 - Streaming tables are designed for data sources that are append-only.
-- Note: If I modify data (using INSERT, UPDATE, …) of a streaming DLT, the modification is kept by the next pipeline-run as only new data is added and the "current" data is untouched.
+- Note: If I modify data (using INSERT, UPDATE, …) of a streaming DLT, the modification is kept even after the next pipeline-run as only new data is added and the "current" data is untouched.
 
 ## Consider using a streaming table when:
 - Ingesting data e.g. into the Bronze layer
