@@ -25,9 +25,9 @@ _Disadvantages_
 - DLT Views
 
 # DLT Tables = Materialized Views
-- Records are processed as required to return accurate results for the current data state. Conclusion: DLT keeps a "data state" internally.
-- The Delta Live Tables runtime automatically creates tables in the Delta format and ensures those tables are updated with the latest result of the query that creates the table.
-- Mat views are powerful because they can handle any changes in the input. Each time the pipeline updates, query results are recalculated to reflect changes in upstream datasets.
+- The Delta Live Tables runtime automatically creates MVs in the Delta format and ensures they contain the latest result of the query.
+- MVs results are refreshed incrementally avoiding the need to completely rebuild the view when new data arrives. An internal state is kept for this.
+- MVs are powerful because they can handle any changes in the input. Each time the pipeline updates, query results are recalculated to reflect changes in upstream datasets.
 - Note: If I modify data (using INSERT, UPDATE, …) of a normal DLT table, the modification is undone by the next pipeline-run and the table is rewritten.
 
 ## Consider using a materialized view when:
@@ -94,5 +94,4 @@ A pipeline contains materialized views and streaming tables declared in Python o
 # Sources
 - https://docs.databricks.com/en/delta-live-tables/index.html
 - https://docs.databricks.com/en/delta-live-tables/unity-catalog.html
-- 
-
+- https://www.databricks.com/blog/introducing-materialized-views-and-streaming-tables-databricks-sql
