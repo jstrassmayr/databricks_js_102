@@ -1,5 +1,5 @@
-See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables/index.html).
-
+Delta Live Tables is a declarative framework for building data processing pipelines. You define the transformations to perform on your data and DLT manages task orchestration, cluster management, monitoring, data quality, and error handling.
+Instead of defining your data pipelines using a series of separate Apache Spark tasks, you define streaming tables and materialized views that the system should create and keep up to date. 
 
 # Pros and Cons of DLT
 _Advantages_
