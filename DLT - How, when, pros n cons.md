@@ -26,14 +26,14 @@ _Disadvantages_
 
 # DLT Tables = Materialized Views
 - The Delta Live Tables runtime automatically creates MVs in the Delta format and ensures they contain the latest result of the query.
-- MVs results are [refreshed incrementally](https://docs.databricks.com/en/optimizations/incremental-refresh.html) avoiding the need to completely rebuild the view when new data arrives. An internal state is kept for this. This is done by Databricks in a "best-effort attempt".
+- MVs results are [refreshed incrementally](https://docs.databricks.com/en/optimizations/incremental-refresh.html) wherever possible avoiding the need to completely rebuild the view when new data arrives. An internal state is kept for this. This is done by Databricks in a "best-effort attempt".
 - MVs are powerful because they can handle any changes in the input. Each time the pipeline updates, query results are recalculated to reflect changes in upstream datasets.
 
 > [!NOTE]
 > If you modify data (using INSERT, UPDATE, …) of an MV, the modification is undone by the next refresh.
 
 ## Consider using a materialized view when:
-- Materialized views should be used for data processing tasks such as transformations (updates, deletions...), aggregations, Change-Data-Capture or pre-computing slow queries and frequently used computations e.g. in Silver- and Gold-Layer.
+- Doing transformations (updates, deletions...), aggregations, Change-Data-Capture or pre-computing slow queries or using frequently needed computations e.g. in Silver- and Gold-Layer.
 - Multiple downstream queries consume the table. Because views are computed on demand, the view is re-computed every time the view is queried.
 - You want to view the results of a query during development. Because tables are materialized and can be viewed and queried outside of the pipeline, using tables during development can help validate the correctness of computations. After validating, convert queries that do not require materialization into views.
 
@@ -42,15 +42,16 @@ _Disadvantages_
   - Incremental refresh for MVs requires your pipeline to be serverless (aka. use a serverless cluster).
   - Before the refresh is actually done, Databricks runs a cost analysis to identify if changes to data sources require a full or incremental refresh.
   - Do not use MVs for datasets whose sources "often" experience full refreshes. This is especially true for big tables.
-  - Non-deterministic functions, for example, CURRENT_TIMESTAMP, are not supported for incremental refreshes. 
   - Incremental refresh needs you to have the table property 'delta.enableChangeDataFeed' set to true on the source table. E.g. ```ALTER TABLE table1 SET TBLPROPERTIES (delta.enableChangeDataFeed = true);```.
   - Some query-clauses needs you to have the table property 'delta.enableRowTracking' set to true on the source table. See [this list](https://docs.databricks.com/en/optimizations/incremental-refresh.html#support-for-materialized-view-incremental-refresh)
 - MVs do not support identity columns or surrogate keys. See [this](https://docs.databricks.com/en/views/materialized.html#limitations).
 - Identity columns are not supported with MVs that are the target of APPLY CHANGES INTO and might be recomputed during updates. For this reason, Databricks recommends using identity columns in Delta Live Tables only with streaming tables. See [Use identity columns in Delta Lake](https://docs.databricks.com/en/delta/generated-columns.html#identity&language-python).
-- TBD: Late arriving dimensions/Early arriving facts are not a problem for MVs as the runtime notices the update(s) in the dimension and updates the result in the target table.
+- Late arriving dimensions/Early arriving facts are not a problem for MVs as the runtime notices the update(s) in the dimension and updates the result in the target table.
 
 > [!WARNING]
-> Materialized views that use expectations are always fully refreshed. See [this link](https://docs.databricks.com/en/optimizations/incremental-refresh.html#support-for-materialized-view-incremental-refresh).
+> - Materialized views that use expectations are always fully refreshed. See [this link](https://docs.databricks.com/en/optimizations/incremental-refresh.html#support-for-materialized-view-incremental-refresh).
+> - Non-deterministic functions, for example, CURRENT_TIMESTAMP, are not supported for incremental refreshes. 
+  
 
 # DLT Streaming Tables
 - Each input record is processed exactly once. DLT keeps track of what it already processed.
