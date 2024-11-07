@@ -30,7 +30,7 @@ _Disadvantages_
 - MVs are powerful because they can handle any changes in the input. Each time the pipeline updates, query results are recalculated to reflect changes in upstream datasets.
 
 > [!NOTE]
-> If I modify data (using INSERT, UPDATE, …) of a normal DLT table, the modification is undone by the next pipeline-run and the table is rewritten.
+> If you modify data (using INSERT, UPDATE, …) of an MV, the modification is undone by the next refresh.
 
 ## Consider using a materialized view when:
 - Materialized views should be used for data processing tasks such as transformations (updates, deletions...), aggregations, Change-Data-Capture or pre-computing slow queries and frequently used computations e.g. in Silver- and Gold-Layer.
