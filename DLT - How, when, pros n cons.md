@@ -28,7 +28,9 @@ _Disadvantages_
 - The Delta Live Tables runtime automatically creates MVs in the Delta format and ensures they contain the latest result of the query.
 - MVs results are [refreshed incrementally](https://docs.databricks.com/en/optimizations/incremental-refresh.html) avoiding the need to completely rebuild the view when new data arrives. An internal state is kept for this. This is done by Databricks in a "best-effort attempt".
 - MVs are powerful because they can handle any changes in the input. Each time the pipeline updates, query results are recalculated to reflect changes in upstream datasets.
-- Note: If I modify data (using INSERT, UPDATE, …) of a normal DLT table, the modification is undone by the next pipeline-run and the table is rewritten.
+
+> [!NOTE]
+> If I modify data (using INSERT, UPDATE, …) of a normal DLT table, the modification is undone by the next pipeline-run and the table is rewritten.
 
 ## Consider using a materialized view when:
 - Materialized views should be used for data processing tasks such as transformations (updates, deletions...), aggregations, Change-Data-Capture or pre-computing slow queries and frequently used computations e.g. in Silver- and Gold-Layer.
