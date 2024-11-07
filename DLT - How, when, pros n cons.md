@@ -38,7 +38,7 @@ See [What is Delta Live Tables](https://docs.databricks.com/en/delta-live-tables
 - The pipeline needs high throughput and low latency.
 
 ## Disadvantages/Limitations
-- Guess by Johannes: Aggregations?
+- Certain transformations that depend on the entire history of the dataset (e.g. aggregations) may not be efficiently handled in a streaming context. But: DLT tries to solve this by keeping intermediate data in the background.
 
 # DLT Views
 - Records are processed every time the view is queried. Use views for intermediate transformations and data quality checks that should not be published to public datasets. But: They leverage caching algorithms to not always have to query the source.
