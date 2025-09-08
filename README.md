@@ -19,7 +19,7 @@ DLT handles orchestration-pipelines (=transformation dependencies), cluster mana
 ## How
 You create your DLT datasets like [Tables, Streaming Tables or Views](https://docs.databricks.com/en/delta-live-tables/index.html#what-are-delta-live-tables-datasets) by defining where they read from (data source) and where they write to (data sink). At runtime, Databricks will automatically resolve the dependencies for you correctly. 
 
-*Example:* Let's assume you have this data objects:
+*Example:* Let's assume you have these data objects:
 1) DLT-table X gets its data from datasource A and
 2) DLT-table Y gets its data from DLT-table X.
 
